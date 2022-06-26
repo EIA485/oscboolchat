@@ -10,7 +10,6 @@ SimpleOSC.OSCMessage f = new SimpleOSC.OSCMessage { path = "/avatar/parameters/b
 statemngr oscstate = new("osc");
 statemngr wsstate = new("WebSocket");
 
-Console.WriteLine("conecting to boolchat websocket");
 wsmngr ws = new(new("wss://logix.newweb.page/boolchat"));
 
 SimpleOSC OSC = new();

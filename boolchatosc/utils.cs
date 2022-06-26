@@ -30,21 +30,26 @@ namespace boolchatosc
         private ClientWebSocket ws = new();
         private ArraySegment<byte> inBuf = new(new byte[10]);
         Task<WebSocketReceiveResult> wsRecive;
+        private Uri uri;
         static readonly ArraySegment<byte> t = new(new byte[] { 116, 114, 117, 101 }); //true
         static readonly ArraySegment<byte> f = new(new byte[] { 102, 097, 108, 115, 101 }); //false
 
         public wsmngr(Uri uri)
         {
-            ws.ConnectAsync(uri, new());
+            this.uri = uri;
+            connect();
         }
 
         public void send(bool state)
         {
+            checkCon();
             ws.SendAsync(state ? t : f, WebSocketMessageType.Text, true, new());
         }
 
         public bool? receive()
         {
+            checkCon();
+
             if (wsRecive == null)
             {
                 if (ws.State == WebSocketState.Open)
@@ -59,6 +64,18 @@ namespace boolchatosc
                 return inBuf[0] == 116;//t
             }
             return null;
+        }
+
+        private void connect()
+        {
+            Console.WriteLine($"connecting to {uri}");
+            ws.ConnectAsync(uri, new());
+        }
+
+        private void checkCon()
+        {
+            if (ws.State == WebSocketState.None || ws.State == WebSocketState.CloseSent || ws.State == WebSocketState.CloseReceived || ws.State == WebSocketState.Closed || ws.State == WebSocketState.Aborted)
+                connect();
         }
     }
 }
