@@ -69,6 +69,7 @@ namespace boolchatosc
         private void connect()
         {
             Console.WriteLine($"connecting to {uri}");
+            ws = new();
             ws.ConnectAsync(uri, new());
         }
 
